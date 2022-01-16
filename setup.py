@@ -17,7 +17,7 @@ if not find_executable('pytest'):
 sources = glob('wiringOP/devLib/*.c')
 sources += glob('wiringOP/wiringPi/*.c')
 sources += ['wiringpi.i']
-
+sources += ['fixUndefFunc.c']
 try:
     sources.remove('wiringOP/devLib/piFaceOld.c')
 except ValueError:
@@ -127,7 +127,7 @@ elif BOARD == "orangepir1plus-rk3328": EXTRA_CFLAGS = "-DCONFIG_ORANGEPI_R1PLUS"
 _wiringpi = Extension(
     '_wiringpi',
     include_dirs=['wiringOP', 'wiringOP/wiringPi', 'wiringOP/devLib'],
-    extra_compile_args=[EXTRA_CFLAGS, "-DCONFIG_ORANGEPI"],
+    extra_compile_args=["-DCONFIG_ORANGEPI_ZERO2", "-DCONFIG_ORANGEPI"],
     swig_opts=['-threads'],
     extra_link_args=['-lcrypt', '-lrt'],
     sources=sources

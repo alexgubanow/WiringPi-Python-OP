@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os
 import sys
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
+from setuptools.command.build_py import build_py
+from setuptools.command.sdist import sdist
 from distutils.spawn import find_executable
 from glob import glob
 
@@ -12,9 +14,31 @@ if not find_executable('pytest'):
     
 sources = glob('wiringOP/devLib/*.c')
 sources += glob('wiringOP/wiringPi/*.c')
-sources += ['wiringpi_wrap.c']
+sources += ['wiringpi.i']
 
-sources.remove('wiringOP/devLib/piFaceOld.c')
+try:
+    sources.remove('wiringOP/devLib/piFaceOld.c')
+except ValueError:
+    # the file is already excluded in the source distribution
+    pass
+
+# Fix so that build_ext runs before build_py
+# Without this, wiringpi.py is generated too late and doesn't
+# end up in the distribution when running setup.py bdist or bdist_wheel.
+# Based on:
+#  https://stackoverflow.com/a/29551581/7938656
+#  and
+#  https://blog.niteoweb.com/setuptools-run-custom-code-in-setup-py/
+class build_py_ext_first(build_py):
+    def run(self):
+        self.run_command("build_ext")
+        return build_py.run(self)
+
+# Make sure wiringpi_wrap.c is available for the source dist, also.
+class sdist_ext_first(sdist):
+    def run(self):
+        self.run_command("build_ext")
+        return sdist.run(self)
 
 _wiringpi = Extension(
     '_wiringpi',
@@ -27,16 +51,9 @@ _wiringpi = Extension(
 
 setup(
     name = 'wiringpi',
-    version = '2.32.1',
-    author = "Philip Howard",
-    author_email = "phil@gadgetoid.com",
-    url = 'https://github.com/WiringPi/WiringPi-Python/',
-    description = """A python interface to WiringPi 2.0 library which allows for
-    easily interfacing with the GPIO pins of the Raspberry Pi. Also supports
-    i2c and SPI""",
-    long_description=open('README.md').read(),
+    version = '2.60.1',
     ext_modules = [ _wiringpi ],
     py_modules = ["wiringpi"],
     install_requires=[],
-    headers=glob('wiringOP/wiringPi/*.h')+glob('wiringOP/devLib/*.h')
+    cmdclass = {'build_py' : build_py_ext_first, 'sdist' : sdist_ext_first}
 )

@@ -7,7 +7,7 @@ WiringPi implements new functions for managing IO expanders.
 
 ##Testing
 Build with gcc version 4.6.3 (Debian 4.6.3-14+rpi1)
-Built against Python 2.7.2, Python 3.2.3
+Built against Python 3.9.2
 
 ##Get/setup repo
 ```bash
@@ -17,9 +17,9 @@ cd WiringPi-Python-OP
 
 ##Prerequisites
 To rebuild the bindings
-you **must** first have python-dev, python-setuptools and swig installed.
+you **must** first have python3-dev, python3-setuptools and swig installed.
 ```bash
-sudo apt-get install python-dev python-setuptools swig
+sudo apt-get install python3-dev python3-setuptools swig
 ```
 
 ##Build WiringPi
@@ -28,16 +28,22 @@ cd WiringPi
 sudo ./build
 ```
 
-##Generate Bindings
-`swig2.0 -python wiringpi.i`
-or
-`swig3.0 -thread -python wiringpi.i`
-
-##Build & install with
-`sudo python setup.py install`
-
-Or Python 3:
-`sudo python3 setup.py install`
+##Build python package
+```bash
+WiringPi-Python-OP
+sudo ./build.sh
+```
+##Detailed process for build python package
+###Generate Bindings
+```bash
+python3 generate-bindings.py > bindings.i
+swig -python wiringpi.i
+```
+###Build & install with
+```bash
+python3 setup.py clean --all
+sudo python3 setup.py build install
+```
 
 #Class-based Usage
 Description incoming!

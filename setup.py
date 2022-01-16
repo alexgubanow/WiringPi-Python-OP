@@ -1,8 +1,15 @@
 #!/usr/bin/env python
-
+import os
+import sys
 from setuptools import setup, find_packages, Extension
+from distutils.spawn import find_executable
 from glob import glob
 
+if not find_executable('pytest'):
+    print("Error:  please install pytest for running tests after build done\n"
+          "        you can try: pip install pytest\n")
+    sys.exit(1)
+    
 sources = glob('wiringOP/devLib/*.c')
 sources += glob('wiringOP/wiringPi/*.c')
 sources += ['wiringpi_wrap.c']

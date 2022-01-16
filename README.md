@@ -30,8 +30,10 @@ sudo ./build
 
 ##Build python package
 ```bash
-WiringPi-Python-OP
-sudo ./build.sh
+cd WiringPi-Python-OP
+make
+sudo make install
+make test
 ```
 ##Detailed process for build python package
 ###Generate Bindings

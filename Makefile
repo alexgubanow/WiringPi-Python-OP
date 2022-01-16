@@ -2,7 +2,7 @@ all: bindings
 	python3 setup.py build
 
 bindings:
-	swig -python -threads wiringpi.i > bindings.i
+	python3 generate-bindings.py > bindings.i
 
 clean:
 	rm -rf build dist wiringpi.egg-info

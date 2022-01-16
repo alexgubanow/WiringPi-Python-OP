@@ -12,6 +12,7 @@
 #include "wiringOP/wiringPi/wiringSerial.h"
 #include "wiringOP/wiringPi/wiringShift.h"
 #include "wiringOP/wiringPi/drcSerial.h"
+#include "wiringOP/wiringPi/ads1115.h"
 #include "wiringOP/wiringPi/max31855.h"
 #include "wiringOP/wiringPi/max5322.h"
 #include "wiringOP/wiringPi/mcp23008.h"
@@ -33,6 +34,13 @@
 #include "wiringOP/wiringPi/softServo.h"
 #include "wiringOP/wiringPi/softTone.h"
 #include "wiringOP/wiringPi/sr595.h"
+#include "wiringOP/wiringPi/bmp180.h"
+#include "wiringOP/wiringPi/drcNet.h"
+#include "wiringOP/wiringPi/ds18b20.h"
+#include "wiringOP/wiringPi/htu21d.h"
+#include "wiringOP/wiringPi/pseudoPins.h"
+#include "wiringOP/wiringPi/rht03.h"
+#include "wiringOP/wiringPi/wpiExtensions.h"
 #include "wiringOP/devLib/ds1302.h"
 #include "wiringOP/devLib/font.h"
 #include "wiringOP/devLib/gertboard.h"
@@ -41,6 +49,8 @@
 #include "wiringOP/devLib/maxdetect.h"
 #include "wiringOP/devLib/piGlow.h"
 #include "wiringOP/devLib/piNes.h"
+#include "wiringOP/devLib/scrollPhat.h"
+#include "wiringOP/devLib/piFace.h"
 %}
 
 %apply unsigned char { uint8_t };
@@ -50,12 +60,12 @@
 };
 
 // Grab a Python function object as a Python object.
-%typemap(in) PyObject *pyfunc {
-  if (!PyCallable_Check($1)) {
+%typemap(in) PyObject *PyFunc {
+  if (!PyCallable_Check($input)) {
       PyErr_SetString(PyExc_TypeError, "Need a callable object!");
       return NULL;
   }
-  $1 = $2;
+  $1 = $input;
 }
 
 %{
